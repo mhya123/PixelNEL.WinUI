@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{csproj,xaml}]
+indent_style = space
+indent_size = 4
+
+[*.cs]
+indent_style = tab
+indent_size = 4
+csharp_new_line_before_open_brace = all
+dotnet_style_require_accessibility_modifiers = for_non_interface_members

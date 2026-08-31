@@ -1,0 +1,132 @@
+<Page
+    x:Class="OpenNEL.WinUI.Pages.ProxyManagerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.Background><AcrylicBrush TintColor="{ThemeResource SystemAltHighColor}" TintOpacity="0.2" FallbackColor="{ThemeResource SystemChromeMediumLowColor}"/></Grid.Background>
+    <ScrollViewer Padding="24" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="18" MaxWidth="1040" HorizontalAlignment="Center">
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Proxy 管理" FontSize="28" FontWeight="SemiBold"/>
+                    <TextBlock Text="查看当前 UDP MITM 与国际版协议中继。关闭代理会立即断开使用它的游戏连接。"
+                               Opacity="0.65" TextWrapping="Wrap"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="刷新" Click="Refresh_Click" VerticalAlignment="Center"/>
+                <Button Grid.Column="2" Content="关闭全部" Click="StopAll_Click" VerticalAlignment="Center"/>
+            </Grid>
+
+            <InfoBar x:Name="StatusBar" IsOpen="False" Title="Proxy" IsClosable="True"/>
+
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" CornerRadius="10" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="活动代理" Opacity="0.6"/>
+                        <TextBlock x:Name="ActiveCountText" Text="0" FontSize="28" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" CornerRadius="10" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="MITM 已启用" Opacity="0.6"/>
+                        <TextBlock x:Name="MitmCountText" Text="0" FontSize="28" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" CornerRadius="10" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="客户端已连接" Opacity="0.6"/>
+                        <TextBlock x:Name="ConnectedCountText" Text="0" FontSize="28" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border CornerRadius="10" Padding="12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <Grid MinHeight="260">
+                    <ListView x:Name="ProxyList" ItemsSource="{x:Bind Proxies, Mode=OneWay}" SelectionMode="None"
+                              IsItemClickEnabled="False" HorizontalContentAlignment="Stretch">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="9" Margin="0,0,0,10" Padding="16"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"
+                                        Background="{ThemeResource LayerFillColorAltBrush}">
+                                    <Grid ColumnSpacing="16" RowSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE968;" FontSize="18"/>
+                                            <TextBlock Text="{Binding Mode}" FontSize="18" FontWeight="SemiBold"/>
+                                            <Border CornerRadius="5" Padding="7,2" Background="{ThemeResource SystemControlHighlightListAccentLowBrush}">
+                                                <TextBlock Text="{Binding StatusText}" FontSize="11"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Grid.RowSpan="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top">
+                                            <Button Content="复制地址" Tag="{Binding ListenEndpoint}" Click="CopyEndpoint_Click"/>
+                                            <Button Content="日志" Tag="{Binding CaptureFilePath}" Click="OpenLog_Click"/>
+                                            <Button Content="关闭" Tag="{Binding Id}" Click="StopProxy_Click"/>
+                                        </StackPanel>
+
+                                        <Grid Grid.Row="1" ColumnSpacing="24">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="监听地址" FontSize="11" Opacity="0.55"/>
+                                                <TextBlock Text="{Binding ListenEndpoint}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="远端服务器" FontSize="11" Opacity="0.55"/>
+                                                <TextBlock Text="{Binding RemoteEndpoint}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2">
+                                                <TextBlock Text="客户端" FontSize="11" Opacity="0.55"/>
+                                                <TextBlock Text="{Binding ClientText}"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <TextBlock Grid.Row="2" Text="{Binding DetailText}" FontSize="12" Opacity="0.65" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Row="3" Text="{Binding StartedAtText}" FontSize="11" Opacity="0.5"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                        <FontIcon Glyph="&#xE774;" FontSize="38" Opacity="0.35" HorizontalAlignment="Center"/>
+                        <TextBlock Text="当前没有活动 Proxy" FontSize="16" Opacity="0.6"/>
+                        <TextBlock Text="启动游戏或国际版协议中继后会自动显示在这里" FontSize="12" Opacity="0.45"/>
+                    </StackPanel>
+                    <ProgressRing x:Name="LoadingRing" Width="34" Height="34" IsActive="False"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+    </Grid>
+</Page>
+
