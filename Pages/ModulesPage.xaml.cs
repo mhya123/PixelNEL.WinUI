@@ -33,6 +33,7 @@ public sealed partial class ModulesPage : Page
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
+		ModuleManager.Initialize();
 		_killaura = ModuleManager.Get("Killaura") as KillauraModule;
 		_scaffold = ModuleManager.Get("Scaffold") as ScaffoldModule;
 		ModulesList.ItemsSource = ModuleManager.Modules.Where((LuminaModule m) => m.Name != "Killaura" && m.Name != "Scaffold" && m.Name != "NightVision").ToList();
