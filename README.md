@@ -14,6 +14,6 @@
 
 请前往 [Releases](https://github.com/mhya123/PixelNEL.WinUI/releases) 下载去验证的版本。
 
-已删除小作文 代码全是空壳但我乐意上传
-可是你不是要破解Chronal吗?? 为什么不见你发出来呀 我也想看看chronal的漏洞在哪 你不想公开发那直接发我邮箱 tuder1218@gmail.com
+已删除小作文 
+
 谢谢那些尝试破解chronal的user 感谢认可
